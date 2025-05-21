@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, work ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Run Django tests
+        run: python manage.py test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+      - name: Install Node dependencies and run tests
+        run: |
+          cd blog_front
+          npm ci
+          npm test -- --runInBand
