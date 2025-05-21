@@ -2,4 +2,5 @@ Django==5.0.*
 djangorestframework==3.15.*
 psycopg[binary]==3.1.*
 drf-spectacular==0.27.*   # OpenAPI 自動生成
+django-cors-headers==4.3.*  # CORS middleware
 python-dotenv==1.0.*      # .env 読み込み補助（manage.py で後ほど利用）
