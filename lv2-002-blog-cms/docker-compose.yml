@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: blogcms_db
+    ports:
+      - "15432:5432"          # ← ホスト15432, コンテナ5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    image: python:3.12-slim
+    container_name: blogcms_web
+    working_dir: /app
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    command: >
+      sh -c "
+        pip install --no-cache-dir -r requirements.txt &&
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+    ports:
+      - "18000:8000"         # ← ホスト18000, コンテナ8000
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+
