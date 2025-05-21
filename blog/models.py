@@ -33,7 +33,9 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="articles")
+    category = models.ForeignKey(
+        Category, on_delete=models.PROTECT, related_name="articles"
+    )
     tags = models.ManyToManyField(Tag, blank=True, related_name="articles")
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -50,4 +52,3 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-
