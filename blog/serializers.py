@@ -58,5 +58,3 @@ class ArticleSerializer(serializers.ModelSerializer):
         if tags is not None:
             instance.tags.set(tags)
         return instance
-
-　
