@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [work]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install backend dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Django tests
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_pass
+        run: python manage.py test
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Node dependencies
+        working-directory: blog_front
+        run: npm install
+
+      - name: Run Jest
+        working-directory: blog_front
+        run: npm test -- --runInBand
